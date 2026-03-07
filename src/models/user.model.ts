@@ -5,6 +5,7 @@ export interface IUser extends Document {
   name: string;
   username: string;
   password: string;
+  companyName: string;
   role: 'user' | 'admin';
   createdAt: Date;
   updatedAt: Date;
@@ -14,6 +15,7 @@ export interface IUser extends Document {
 const userSchema = new Schema<IUser>(
   {
     name:     { type: String, required: true, trim: true },
+    companyName: { type: String, required: true, trim: true },
     username:    { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6, select: false },
     role:     { type: String, enum: ['user', 'admin'], default: 'user' },

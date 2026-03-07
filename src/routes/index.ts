@@ -8,7 +8,7 @@ const router = Router();
 
 // router.use('/health', healthRoutes);
 router.use('/auth', userRoutes);
-router.use('/event', eventRoutes);
+router.use('/events', eventRoutes);
 router.use('/event-items', eventItemRoutes);
 
 export default router;

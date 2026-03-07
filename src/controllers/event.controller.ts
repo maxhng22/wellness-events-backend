@@ -5,7 +5,7 @@ import { eventService } from '../services/event.service';
 // GET /api/users
 export const getAllEvent = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const events = await eventService.findAll();    
+    const events = await eventService.findAll(_req.user?.id || '');    
     res.status(200).json({ success: true, count: events.length, data: events });
     } catch (error) {
     next(error);
@@ -14,7 +14,7 @@ export const getAllEvent = async (_req: Request, res: Response, next: NextFuncti
 export const createNewEvent = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const event= await eventService.create(_req.body,_req.user?.id || '');
-    res.status(200).json({ success: true, data: event });
+    res.status(201).json({ success: true, data: event });
   } catch (error) {
     next(error);
   }

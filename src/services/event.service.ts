@@ -1,20 +1,18 @@
+import { AppError } from '../types/error';
 import { Event, IEvent } from '../models/event.model';
-import { User } from '../models/user.model';
 import { EventItem } from '../models/event_item.model';
+import { User } from '../models/user.model';
 import mongoose from 'mongoose';
 
 export interface CreateEventInput {
-  companyName: string;
   eventId: string;
-  vendorId: string;
   proposedDates: string[];
   location: string;
-  createdBy: string;
   remarks?: string;
 }
 
 export interface UpdateEventInput {
-  eventId?: string;
+  eventTypeId?: string;
   vendorId?: string;
   proposedDates?: string[];
   location?: string;
@@ -25,20 +23,40 @@ export interface UpdateEventInput {
 
 export const eventService = {
 
-    findAll: async () => {
-      return Event.find();
-    },
+  findAll: async (userId: string) => {
+       const user = await User.findById(userId).orFail(() =>
+      new AppError('User not found', 404)
+    );
 
-  // Create new event
-  create: async (data: CreateEventInput,userId: string): Promise<IEvent> => {
+    if (user.role === 'hr') {
+      return Event.find({ createdBy: userId })
+        .populate('eventId',  'eventName vendorUsername vendorCompanyName')
+        .populate('vendorId', 'name email')
+        .populate('createdBy', 'name email');
+    }else{
+       return Event.find({ vendorId: userId })
+      .populate('eventId',  'eventName vendorUsername vendorCompanyName')
+      .populate('vendorId', 'name email')
+      .populate('createdBy', 'name email');
+    };
+  },
+  create: async (data: CreateEventInput, userId: string): Promise<IEvent> => {
+    const user = await User.findById(userId).orFail(() =>
+      new AppError('User not found', 404)
+    );
 
-   const user= await User.findById(userId).orFail(() => new Error('User not found'));
-   await EventItem.findById(data.eventId).orFail(() => new Error('Event item not found'));
+    if (user.role !== 'hr') {
+      throw new AppError('Only HR can create events', 403);
+    }
+
+    const eventItem = await EventItem.findById(data.eventId).orFail(() =>
+      new AppError('Event item not found', 404)
+    );
 
     const event = new Event({
       companyName:   user.companyName,
       eventId:       new mongoose.Types.ObjectId(data.eventId),
-      vendorId:      new mongoose.Types.ObjectId(data.vendorId),
+      vendorId:      eventItem.vendorId,
       createdBy:     new mongoose.Types.ObjectId(userId),
       proposedDates: data.proposedDates.map((d) => new Date(d)),
       location:      data.location,
@@ -50,12 +68,11 @@ export const eventService = {
     return await event.save();
   },
 
-  // Update event by ID
   update: async (id: string, data: UpdateEventInput): Promise<IEvent> => {
     const updates: Partial<IEvent> = {};
 
-    if (data.eventId   !== undefined) updates.eventId   = new mongoose.Types.ObjectId(data.eventId)   as any;
-    if (data.vendorId      !== undefined) updates.vendorId      = new mongoose.Types.ObjectId(data.vendorId)      as any;
+    if (data.eventTypeId   !== undefined) updates.eventId       = new mongoose.Types.ObjectId(data.eventTypeId) as any;
+    if (data.vendorId      !== undefined) updates.vendorId      = new mongoose.Types.ObjectId(data.vendorId)    as any;
     if (data.proposedDates !== undefined) updates.proposedDates = data.proposedDates.map((d) => new Date(d));
     if (data.location      !== undefined) updates.location      = data.location;
     if (data.status        !== undefined) updates.status        = data.status;
@@ -68,7 +85,7 @@ export const eventService = {
       { new: true, runValidators: true }
     );
 
-    if (!updated) throw Object.assign(new Error('Event not found'), { statusCode: 404 });
+    if (!updated) throw new AppError('Event not found', 404);
 
     return updated;
   },

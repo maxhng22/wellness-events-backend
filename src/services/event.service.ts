@@ -90,4 +90,20 @@ export const eventService = {
     return updated;
   },
 
+  approve: async (id: string, confirmedDate: string): Promise<IEvent> => {
+    const event = await Event.findById(id).orFail(() => new AppError('Event not found', 404));
+
+    event.status = 'confirmed';
+    event.confirmedDate = new Date(confirmedDate);  
+    return await event.save();
+  },
+
+  cancel: async (id: string, remarks: string): Promise<IEvent> => {
+    const event = await Event.findById(id).orFail(() => new AppError('Event not found', 404));
+
+    event.status = 'cancelled';
+    event.remarks = remarks;
+    return await event.save();
+  }
+
 };

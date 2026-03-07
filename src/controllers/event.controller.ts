@@ -13,6 +13,11 @@ export const getAllEvent = async (_req: Request, res: Response, next: NextFuncti
 };
 export const createNewEvent = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+    const { eventId, proposedDates, location } = _req.body;
+    if (!eventId || !proposedDates || !location) {
+      res.status(400).json({ success: false, message: 'Event ID, proposed dates, and location are required' });
+      return;
+    }
     const event= await eventService.create(_req.body,_req.user?.id || '');
     res.status(201).json({ success: true, data: event });
   } catch (error) {
@@ -29,6 +34,33 @@ export const updateEventById = async (req: Request, res: Response, next: NextFun
     next(error);
   }
 };
+
+export const approveEventById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { confirmedDate } = req.body;
+    const event = await eventService.approve(req.params.id,confirmedDate);    
+    res.status(200).json({ success: true, data: event });
+    } catch (error) {
+
+    next(error);
+    }
+};
+
+export const cancelEventById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { remarks } = req.body;
+    if (!remarks) {
+      res.status(400).json({ success: false, message: 'Remarks are required to cancel an event' });
+      return;
+    }
+    const event = await eventService.cancel(req.params.id, remarks);    
+    res.status(200).json({ success: true, data: event });
+    } catch (error) {
+    next(error);
+    }   
+
+};
+
 
 
 

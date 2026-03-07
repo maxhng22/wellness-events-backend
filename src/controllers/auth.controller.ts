@@ -15,7 +15,7 @@ export const getAllUsers = async (_req: Request, res: Response, next: NextFuncti
 // GET /api/users/:id
 export const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const user = await userService.findById(req.params.id);
+    const user = await userService.findById(req.user?.id);
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     next(error);

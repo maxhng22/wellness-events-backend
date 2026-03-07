@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IEvent extends Document {
-  eventTypeId: mongoose.Types.ObjectId;
+  eventId: mongoose.Types.ObjectId;
   vendorId: mongoose.Types.ObjectId;
   proposedDates: Date[];
   location: string;
@@ -14,7 +14,7 @@ export interface IEvent extends Document {
 
 const eventSchema = new Schema<IEvent>(
   {
-    eventTypeId: { type: Schema.Types.ObjectId, required: true, ref: 'event_items' },
+    eventId: { type: Schema.Types.ObjectId, required: true, ref: 'event_items' },
     vendorId: { type: Schema.Types.ObjectId, required: true, ref: 'users' },
     proposedDates: { type: [Date], required: true },
     companyName :{ type: String, required: true, default: null },

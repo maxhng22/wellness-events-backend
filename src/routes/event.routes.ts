@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { authenticate } from '../middlewares/auth';
-import { getAllEventItems, getEventItemById } from '../controllers/event_item.controller';
+import { createNewEvent, updateEventById,getAllEvent } from '../controllers/event.controller';
 
 const router = Router();
 
 // ─── Protected ────
-router.get('/', authenticate, getAllEventItems);
-router.get('/:id', authenticate, getEventItemById);
+router.get('/', authenticate, getAllEvent);
+router.post('/', authenticate, createNewEvent);
+router.patch('/:id', authenticate, updateEventById);
 
 export default router;

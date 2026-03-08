@@ -34,9 +34,9 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     console.log('Login successful for user:', result.token);
     res.cookie('token', result.token, {
       httpOnly: true,
-      secure: false, // HTTPS only in production
-      sameSite: 'lax', // works on localhost
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: true,          // must be true for HTTPS
+      sameSite: 'none',      // allows cross-site
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     res.status(200).json({ success: true, ...result });
   } catch (error) {

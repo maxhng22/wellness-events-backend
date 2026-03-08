@@ -31,7 +31,6 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       return;
     }
     const result = await userService.login({ username, password });
-    console.log('Login successful for user:', result.token);
     res.cookie('token', result.token, {
       httpOnly: true,
       secure: true,          // must be true for HTTPS

@@ -46,8 +46,9 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 export const logoutUser = async (_req: Request, res: Response): Promise<void> => {
   res.clearCookie('token', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: true,
+    sameSite: 'none', // must match login
+    path: '/',        // ensure path matches
   });
   res.status(200).json({ success: true, message: 'Logged out successfully' });
 };

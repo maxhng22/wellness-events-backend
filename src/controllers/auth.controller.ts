@@ -26,6 +26,10 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 export const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { username, password } = req.body;
+    if (!username || !password) {
+      res.status(400).json({ success: false, message: 'Username and password are required' });
+      return;
+    }
     const result = await userService.login({ username, password });
     console.log('Login successful for user:', result.token);
     res.cookie('token', result.token, {

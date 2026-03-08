@@ -1,5 +1,6 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { User, IUser } from '../models/user.model';
+import { AppError } from '../types/error';
 
 export interface RegisterInput {
   name: string;
@@ -19,7 +20,7 @@ export interface UpdateInput {
 
 const signToken = (user: IUser): string => {
   const secret = process.env.JWT_SECRET;
-  if (!secret) throw new Error('JWT_SECRET is not defined');
+  if (!secret) throw new AppError('JWT_SECRET is not defined', 500);
 
   return jwt.sign(
     { id: user._id, username: user.username, role: user.role },
@@ -37,7 +38,7 @@ export const userService = {
   // Get single user by ID
   findById: async (id: string) => {
     const user = await User.findById(id).select('-password');
-    if (!user) throw Object.assign(new Error('User not found'), { statusCode: 404 });
+    if (!user) throw new AppError('User not found', 404);
     return user;
   },
 
@@ -45,7 +46,7 @@ export const userService = {
   login: async (data: LoginInput) => {
     const user = await User.findOne({ username: data.username }).select('+password');
     if (!user || !(await user.comparePassword(data.password))) {
-      throw Object.assign(new Error('Invalid username or password'), { statusCode: 401 });
+      throw new AppError('Invalid username or password', 401);
     }
 
     const token = signToken(user);

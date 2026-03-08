@@ -24,20 +24,20 @@ export interface UpdateEventInput {
 export const eventService = {
 
   findAll: async (userId: string) => {
-       const user = await User.findById(userId).orFail(() =>
+    const user = await User.findById(userId).orFail(() =>
       new AppError('User not found', 404)
     );
 
     if (user.role === 'hr') {
       return Event.find({ createdBy: userId })
-        .populate('eventId',  'eventName vendorUsername vendorCompanyName')
+        .populate('eventId', 'eventName vendorUsername vendorCompanyName')
         .populate('vendorId', 'name email')
         .populate('createdBy', 'name email');
-    }else{
-       return Event.find({ vendorId: userId })
-      .populate('eventId',  'eventName vendorUsername vendorCompanyName')
-      .populate('vendorId', 'name email')
-      .populate('createdBy', 'name email');
+    } else {
+      return Event.find({ vendorId: userId })
+        .populate('eventId', 'eventName vendorUsername vendorCompanyName')
+        .populate('vendorId', 'name email')
+        .populate('createdBy', 'name email');
     };
   },
   create: async (data: CreateEventInput, userId: string): Promise<IEvent> => {
@@ -54,14 +54,14 @@ export const eventService = {
     );
 
     const event = new Event({
-      companyName:   user.companyName,
-      eventId:       new mongoose.Types.ObjectId(data.eventId),
-      vendorId:      eventItem.vendorId,
-      createdBy:     new mongoose.Types.ObjectId(userId),
+      companyName: user.companyName,
+      eventId: new mongoose.Types.ObjectId(data.eventId),
+      vendorId: eventItem.vendorId,
+      createdBy: new mongoose.Types.ObjectId(userId),
       proposedDates: data.proposedDates.map((d) => new Date(d)),
-      location:      data.location,
-      remarks:       data.remarks ?? null,
-      status:        'pending',
+      location: data.location,
+      remarks: data.remarks ?? null,
+      status: 'pending',
       confirmedDate: null,
     });
 
@@ -71,12 +71,12 @@ export const eventService = {
   update: async (id: string, data: UpdateEventInput): Promise<IEvent> => {
     const updates: Partial<IEvent> = {};
 
-    if (data.eventTypeId   !== undefined) updates.eventId       = new mongoose.Types.ObjectId(data.eventTypeId) as any;
-    if (data.vendorId      !== undefined) updates.vendorId      = new mongoose.Types.ObjectId(data.vendorId)    as any;
+    if (data.eventTypeId !== undefined) updates.eventId = new mongoose.Types.ObjectId(data.eventTypeId) as any;
+    if (data.vendorId !== undefined) updates.vendorId = new mongoose.Types.ObjectId(data.vendorId) as any;
     if (data.proposedDates !== undefined) updates.proposedDates = data.proposedDates.map((d) => new Date(d));
-    if (data.location      !== undefined) updates.location      = data.location;
-    if (data.status        !== undefined) updates.status        = data.status;
-    if (data.remarks       !== undefined) updates.remarks       = data.remarks ?? null;
+    if (data.location !== undefined) updates.location = data.location;
+    if (data.status !== undefined) updates.status = data.status;
+    if (data.remarks !== undefined) updates.remarks = data.remarks ?? null;
     if (data.confirmedDate !== undefined) updates.confirmedDate = data.confirmedDate ? new Date(data.confirmedDate) : null;
 
     const updated = await Event.findByIdAndUpdate(
@@ -90,17 +90,38 @@ export const eventService = {
     return updated;
   },
 
-  approve: async (id: string, confirmedDate: string): Promise<IEvent> => {
+  approve: async (id: string, confirmedDate: string, userId: string): Promise<IEvent> => {
     const event = await Event.findById(id).orFail(() => new AppError('Event not found', 404));
+    const user = await User.findById(userId).orFail(() =>
+      new AppError('User not found', 404)
+    );
+
+    if (user.role !== 'vendor') {
+      throw new AppError('Only vendors can approve events', 403);
+    }
+
+    if (event.status !== 'pending') {
+      throw new AppError('Only pending events can be approved', 400);
+    }
 
     event.status = 'confirmed';
-    event.confirmedDate = new Date(confirmedDate);  
+    event.confirmedDate = new Date(confirmedDate);
     return await event.save();
   },
 
-  cancel: async (id: string, remarks: string): Promise<IEvent> => {
+  cancel: async (id: string, remarks: string, userId: string): Promise<IEvent> => {
     const event = await Event.findById(id).orFail(() => new AppError('Event not found', 404));
+    const user = await User.findById(userId).orFail(() =>
+      new AppError('User not found', 404)
+    );
 
+    if (user.role !== 'vendor') {
+      throw new AppError('Only vendors can cancel events', 403);
+    }
+
+    if (event.status !== 'pending') {
+      throw new AppError('Only pending events can be cancelled', 400);
+    }
     event.status = 'cancelled';
     event.remarks = remarks;
     return await event.save();

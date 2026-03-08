@@ -214,11 +214,29 @@ Locations
 
 ## ☁️ Deployment
 
+Backend is live on Render:
+**[https://wellness-events-backend.onrender.com](https://wellness-events-backend.onrender.com)**
+
+> ⚠️ Hosted on Render free tier — may take **50–60 seconds** to wake up on first request.
+
+### Deploy Your Own
+
 1. Push code to GitHub
-2. Connect to [Render](https://render.com) or [Heroku](https://heroku.com)
-3. Set environment variables: `MONGO_URI`, `JWT_SECRET`, `FRONTEND_URL`
+2. Connect repo to [Render](https://render.com) or [Heroku](https://heroku.com)
+3. Set environment variables:
+
+| Variable | Description |
+|---|---|
+| `MONGO_URI` | MongoDB connection string |
+| `JWT_SECRET` | Secret key for JWT signing |
+| `FRONTEND_URL` | Frontend URL for CORS |
+
 4. Build and start:
 ```bash
+npm install
+npm run build
+npm start
+```
 npm install
 npm run build
 npm start

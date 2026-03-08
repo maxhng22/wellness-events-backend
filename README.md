@@ -39,7 +39,7 @@ REST API backend for the Wellness Events Web Application. Handles event creation
 src/
 ├─ config/           # Database & environment configuration
 ├─ controllers/      # Route handler logic
-├─ middleware/        # Auth guards & error handlers
+├─ middleware/       # Auth guards & error handlers
 ├─ models/           # Mongoose schemas & models
 ├─ routes/           # Express route definitions
 ├─ services/         # Business logic layer
@@ -50,8 +50,8 @@ src/
 ## 🚀 Setup
 ```bash
 # Clone repo
-git clone <your-repo-url>
-cd backend
+git clone https://github.com/maxhng22/wellness-events-backend
+cd wellness-events-backend
 
 # Install dependencies
 npm install
@@ -83,18 +83,20 @@ FRONTEND_URL=<frontend-url>
 | Method | Route | Description |
 |---|---|---|
 | `POST` | `/auth/login` | Login user |
-| `POST` | `/auth/logout` | Logout user |
+| `GET` | `/auth/logout` | Logout user |
+| `GET` | `/auth/profile` | Get user detail |
 
 ### Event Items
 | Method | Route | Description |
 |---|---|---|
-| `GET` | `/option` | Get all event items |
+| `GET` | `/event-items` | Get all event items |
 
 ### Events
 | Method | Route | Description |
 |---|---|---|
 | `POST` | `/events` | Create new event *(HR only)* |
-| `PATCH` | `/events/:id/status` | Approve or reject event |
+| `PATCH` | `/events/:id/approve` | Approve event |
+| `PATCH` | `/events/:id/reject` |  Reject event |
 | `GET` | `/events` | List all events *(HR / Vendor)* |
 
 ### Locations

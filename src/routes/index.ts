@@ -3,6 +3,7 @@ import { Router } from 'express';
 import userRoutes from './auth.routes';
 import eventItemRoutes from './event_item.route';
 import eventRoutes from './event.routes';
+import locationRoutes from './location.routes';
 
 const router = Router();
 
@@ -10,5 +11,6 @@ const router = Router();
 router.use('/auth', userRoutes);
 router.use('/events', eventRoutes);
 router.use('/event-items', eventItemRoutes);
+router.use('/locations', locationRoutes); // Import location routes
 
 export default router;

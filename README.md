@@ -171,7 +171,20 @@ FRONTEND_URL=<frontend-url>
 ---
 
 ## 📊 Collections Overview
-<img width="1023" height="175" alt="image" src="https://github.com/user-attachments/assets/693d0665-95ae-4704-9a2e-dad7d532d4c3" />
+
+| Collection | Documents | Avg. Document Size | Storage Size | Indexes | Total Index Size |
+|---|---|---|---|---|---|
+| `event_items` | 5 | 158.00 B | 36.86 kB | 1 | 36.86 kB |
+| `events` | 3 | 315.00 B | 36.86 kB | 1 | 36.86 kB |
+| `locations` | 2.9K | 102.00 B | 151.55 kB | 1 | 151.55 kB |
+| `users` | 6 | 198.00 B | 36.86 kB | 2 | 73.73 kB |
+
+<details>
+<summary>📸 MongoDB Compass snapshot</summary>
+
+![Collections Overview](https://github.com/user-attachments/assets/693d0665-95ae-4704-9a2e-dad7d532d4c3)
+
+</details>
 
 
 ## 🗺️ ER Diagram

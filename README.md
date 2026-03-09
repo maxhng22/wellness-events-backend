@@ -8,12 +8,13 @@ REST API backend for the Wellness Events Web Application. Handles event creation
 
 1. [Overview](#overview)
 2. [Tech Stack](#tech-stack)
-3. [Setup](#setup)
-4. [API Endpoints](#api-endpoints)
-5. [Database Collections](#database-collections)
-6. [ER Diagram](#er-diagram)
-7. [Deployment](#deployment)
-
+3. [Folder Structure](#folder-structure)
+4. [Setup](#setup)
+5. [API Endpoints](#api-endpoints)
+6. [Database Collections](#database-collections)
+7. [Collections Overview](#collections-overview)
+8. [ER Diagram](#er-diagram)
+9. [Deployment](#deployment)
 ---
 
 ## 🔍 Overview

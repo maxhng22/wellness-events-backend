@@ -170,6 +170,10 @@ FRONTEND_URL=<frontend-url>
 
 ---
 
+## 📊 Collections Overview
+<img width="1023" height="175" alt="image" src="https://github.com/user-attachments/assets/693d0665-95ae-4704-9a2e-dad7d532d4c3" />
+
+
 ## 🗺️ ER Diagram
 ```
 Users
